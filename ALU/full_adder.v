@@ -1,15 +1,4 @@
-module full_adder(
-    input  input_a,
-    input  input_b,
-    input  cin,
-    output sum,
-    output cout
-);
-    assign sum  = input_a ^ input_b ^ cin;
-    assign cout = (input_a & input_b) | ((input_a ^ input_b) & cin);
-endmodule
-
-module tb_full_adder;
+/*module tb_full_adder;
     reg a;
     reg b;
     reg cin;
@@ -40,3 +29,4 @@ module tb_full_adder;
         $finish;
     end
 endmodule
+*/
