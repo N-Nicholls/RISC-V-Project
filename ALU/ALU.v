@@ -20,10 +20,49 @@ module ripple_carry_adder #(parameter N=8)( // # says that this is a parameter. 
     output cout
 
 );
+    wire [N:0] carry;  // N+1 wires: carry[0] = cin, carry[N] = cout
+    assign carry[0] = cin;
+    assign cout = carry[N];
 
-    assign sum 
+    genvar i;
+    generate
+        for(i = 0;i < N; i = i+1) begin : fa_chain
+            full_adder fa(.input_a(a[i]), // each full adder carries their related register in
+            .input_b(b[i]), 
+            .cin(carry[i]), 
+            .sum(sum[i]), 
+            .cout(carry[i+1])
+            );
+        end
+    endgenerate
+
 endmodule
 
-rippe_carry_adder
 
-alu
+
+module tb_ripple ();
+    parameter N=8;
+    reg [N-1:0] a;
+    reg [N-1:0] b;
+    reg cin;
+    wire [N-1:0] sum;
+    wire cout;
+
+    ripple_carry_adder #(.N(N)) uut (.a(a), .b(b), .cin(cin), .sum(sum), .cout(cout));
+
+    initial begin
+        $dumpfile("dump.vcd");
+        $dumpvars(0, tb_ripple);
+
+        a = 0; b = 0; cin = 0;
+        #10;
+        a = 8'h1A; b = 8'h2B; cin = 0;
+        #10;
+        a = 8'hFF; b = 8'h01; cin = 0;  // overflow case
+        #10;
+
+
+        $finish;
+    end
+
+endmodule
